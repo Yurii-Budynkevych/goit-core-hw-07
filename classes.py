@@ -1,4 +1,6 @@
 from collections import UserDict
+from datetime import datetime
+import re
 
 class PhoneError(Exception):
     def __init__(self, message="not ok number"):
@@ -18,26 +20,28 @@ class Name(Field):
         super().__init__(name)    
 
 class Phone(Field):
+    __pattern = r"^\+?\d{10,}$"
+
     def __init__(self, phone):
-        if len(phone) < 10:
-            raise PhoneError() 
+        if not phone:
+                raise PhoneError("Plese enter phone")
+        elif not re.match(self.__pattern, phone):
+                raise PhoneError() 
         super().__init__(phone)
 
 class Birthday(Field):
     def __init__(self, value):
         try:
-            # Додайте перевірку коректності даних
-            # та перетворіть рядок на об'єкт datetime
-            pass
+            self.date = datetime.strptime(value, '%d.%m.%Y')
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")          
 
 class Record:
-    def __init__(self, name):
+    def __init__(self, name, phone=None, birthday=None):
         self.name = Name(name)
-        self.phones = []
-        self.birthday = None
-
+        self.phones = [Phone(phone)]
+        self.birthday = birthday
+  
     def add_phone (self, phone):
         new_phone = Phone(phone) 
         self.phones.append(new_phone)
@@ -55,6 +59,9 @@ class Record:
     
     def get_value (self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+    
+    def __repr__ (self):
+        return f"phones: {'; '.join(p.value for p in self.phones)}, birthday: {self.birthday}"
 
 class AddressBook(UserDict):
     def add_record(self, record):

@@ -1,4 +1,4 @@
-from classes import AddressBook
+from classes import AddressBook, Record
 
 def parse_input(user_input):
     cmd, *args = user_input.split()
@@ -20,7 +20,7 @@ def main():
             print("How can I help you?")
 
         elif command == "add":
-            pass
+            book.add_record(Record(*args))
 
         elif command == "change":
             pass
@@ -29,7 +29,7 @@ def main():
             pass
 
         elif command == "all":
-            pass
+            print(book)
 
         elif command == "add-birthday":
             pass
