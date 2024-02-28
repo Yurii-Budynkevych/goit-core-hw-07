@@ -20,7 +20,12 @@ def main():
             print("How can I help you?")
 
         elif command == "add":
-            book.add_record(Record(*args))
+            if not args:
+                raise Exception('please enter name')
+            elif args and book.find(args[0]):
+                print('TODO!')
+            else:    
+                book.add_record(Record(*args))
 
         elif command == "change":
             pass
