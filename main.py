@@ -44,19 +44,46 @@ def main():
                 print(f"Record with name {args[0]} not found")
 
         elif command == "phone":
-            pass
+            if not args:
+                raise Exception('please enter name')
+            elif args and book.find(args[0]):
+                record = book.find(args[0])
+                try:
+                    print(record.get_phones())
+                except Exception as e:
+                    print("Error Occured: ", e)        
+            else:    
+                print(f"Record with name {args[0]} not found")
 
         elif command == "all":
             print(book)
 
         elif command == "add-birthday":
-            pass
+            if not args:
+                raise Exception('please enter name')
+            elif args and book.find(args[0]):
+                record = book.find(args[0])
+                try:
+                    record.add_birthday(args[1])
+                except Exception as e:
+                    print("Error Occured, make sure passing the date: ", e)        
+            else:    
+                print(f"Record with name {args[0]} not found")
 
         elif command == "show-birthday":
-            pass
+            if not args:
+                raise Exception('please enter name')
+            elif args and book.find(args[0]):
+                record = book.find(args[0])
+                try:
+                    print(record.get_birthday())
+                except Exception as e:
+                    print("Error Occured, make sure passing the date: ", e)        
+            else:    
+                print(f"Record with name {args[0]} not found")
 
         elif command == "birthdays":
-            pass
+            print(book.show_records_birthdays())
 
         else:
             print("Invalid command.")

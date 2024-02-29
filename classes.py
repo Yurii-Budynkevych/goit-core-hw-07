@@ -34,7 +34,11 @@ class Birthday(Field):
         try:
             self.date = datetime.strptime(value, '%d.%m.%Y')
         except ValueError:
-            raise ValueError("Invalid date format. Use DD.MM.YYYY")          
+            raise ValueError("Invalid date format. Use DD.MM.YYYY")    
+
+    def __repr__(self):
+        return f"Object Birthday. birthday: {self.date}"
+
 
 class Record:
     def __init__(self, name, phone=None, birthday=None):
@@ -57,11 +61,18 @@ class Record:
                 return phone
         return 'not found'
     
-    def get_value (self):
+    def get_phones (self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
     
+    def add_birthday (self, birthday):
+        new_birthday = Birthday(birthday) 
+        self.birthday = new_birthday
+
+    def get_birthday (self):
+        return f"Contact name: {self.name.value}, birthday: {self.birthday}"
+    
     def __repr__ (self):
-        return f"phones: {'; '.join(p.value for p in self.phones)}, birthday: {self.birthday}"
+        return f"Object Record. phones: {'; '.join(p.value for p in self.phones)}, birthday: {self.birthday}"
 
 class AddressBook(UserDict):
     def add_record(self, record):
@@ -70,6 +81,13 @@ class AddressBook(UserDict):
     def find(self, record_name):
         return self.data.get(record_name)
     
+    def show_records_birthdays(self):
+        birthday_list = []
+        for record_name, record in self.data.items():
+            if record.birthday:
+                birthday_list.append((record_name, record.get_birthday()))
+        return birthday_list
+
     def delete(self, record_name):
         self.data.pop(record_name) 
 
