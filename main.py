@@ -23,12 +23,25 @@ def main():
             if not args:
                 raise Exception('please enter name')
             elif args and book.find(args[0]):
-                print('TODO!')
+                record = book.find(args[0])
+                try:
+                    record.add_phone(args[1])
+                except Exception as e:
+                    print("Error Occured, plese make sure to pass phone number as second argument: ", e)        
             else:    
                 book.add_record(Record(*args))
 
         elif command == "change":
-            pass
+            if not args:
+                raise Exception('please enter name')
+            elif args and book.find(args[0]):
+                record = book.find(args[0])
+                try:
+                    record.edit_phone(args[1], args[2])
+                except Exception as e:
+                    print("Error Occured, plese make sure to pass phone number to edit and new value: ", e)        
+            else:    
+                print(f"Record with name {args[0]} not found")
 
         elif command == "phone":
             pass
