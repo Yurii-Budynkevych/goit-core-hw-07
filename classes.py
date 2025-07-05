@@ -31,13 +31,15 @@ class Phone(Field):
 
 class Birthday(Field):
     def __init__(self, value):
+
         try:
-            self.date = datetime.strptime(value, '%d.%m.%Y')
+            datetime.strptime(value, '%d.%m.%Y')
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")    
+        super().__init__(value)
 
     def __repr__(self):
-        return f"Object Birthday. birthday: {self.date}"
+        return f"Object Birthday. birthday: {self.value}"
 
 
 class Record:
@@ -55,11 +57,11 @@ class Record:
             if el.value == phone:
                 el.value = edited_phone
 
-    def find_phone (self, phone):
+    def find_phone(self, phone):
         for el in self.phones:
             if el.value == phone:
-                return phone
-        return 'not found'
+                return el 
+        return None
     
     def get_phones (self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
