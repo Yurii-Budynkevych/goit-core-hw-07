@@ -85,6 +85,13 @@ def main():
             except Exception as e:
                 print("Error occurred while listing birthdays:", e)
 
+        elif command == "all":
+            if not book.data:
+                print("No contacts available.")
+            else:
+                for record in book.values():
+                    print(record)
+
         else:
             print("Invalid command.")
 

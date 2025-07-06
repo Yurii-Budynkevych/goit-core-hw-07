@@ -73,15 +73,18 @@ class Record:
     def get_birthday (self):
         return f"Contact name: {self.name.value}, birthday: {self.birthday}"
     
-    def __repr__ (self):
-        return f"Object Record. phones: {'; '.join(p.value for p in self.phones)}, birthday: {self.birthday}"
+    def __repr__(self):
+        name = self.name.value
+        phones = '; '.join(p.value for p in self.phones)
+        bday = self.birthday if self.birthday else "N/A"
+        return f"Name: {name}, Phones: {phones}, Birthday: {bday}"
 
 class AddressBook(UserDict):
     def add_record(self, record):
         self.data[record.name.get_value()] = record
 
     def find(self, record_name):
-        return self.data.get(record_name)
+        return self.data.get(record_name.lower().capitalize())
     
     def show_records_birthdays(self):
         birthday_list = []
