@@ -1,5 +1,5 @@
-from collections import UserDict
-from datetime import datetime
+from collections import UserDict, defaultdict
+from datetime import datetime, timedelta
 import re
 
 class PhoneError(Exception):
@@ -52,10 +52,12 @@ class Record:
         new_phone = Phone(phone) 
         self.phones.append(new_phone)
 
-    def edit_phone (self, phone, edited_phone):
+    def edit_phone(self, phone, edited_phone):
         for el in self.phones:
             if el.value == phone:
-                el.value = edited_phone
+                el.value = Phone(edited_phone).value
+                return
+        raise ValueError("Original phone number not found.")
 
     def find_phone(self, phone):
         for el in self.phones:
@@ -87,11 +89,43 @@ class AddressBook(UserDict):
         return self.data.get(record_name.lower().capitalize())
     
     def show_records_birthdays(self):
-        birthday_list = []
-        for record_name, record in self.data.items():
-            if record.birthday:
-                birthday_list.append((record_name, record.get_birthday()))
-        return birthday_list
+            today = datetime.today().date()
+            upcoming_birthdays = defaultdict(list)
+
+            for record in self.data.values():
+                if not record.birthday:
+                    continue
+
+                bday_str = record.birthday.value  # Format: 'DD.MM.YYYY'
+                bday_date = datetime.strptime(bday_str, '%d.%m.%Y').date()
+                this_year_birthday = bday_date.replace(year=today.year)
+
+                # If birthday has already passed this year, skip or set to next year
+                if this_year_birthday < today:
+                    this_year_birthday = bday_date.replace(year=today.year + 1)
+
+                # Check if it's in the upcoming 7 days
+                if 0 <= (this_year_birthday - today).days < 7:
+                    greeting_day = this_year_birthday
+
+                    # If weekend, shift to Monday
+                    if greeting_day.weekday() == 5:  # Saturday
+                        greeting_day += timedelta(days=2)
+                    elif greeting_day.weekday() == 6:  # Sunday
+                        greeting_day += timedelta(days=1)
+
+                    weekday_name = greeting_day.strftime('%A')
+                    upcoming_birthdays[weekday_name].append(record.name.value)
+
+            if not upcoming_birthdays:
+                return "No upcoming birthdays this week."
+
+            result = []
+            for day in sorted(upcoming_birthdays.keys()):
+                names = ', '.join(upcoming_birthdays[day])
+                result.append(f"{day}: {names}")
+
+            return '\n'.join(result)
 
     def delete(self, record_name):
         self.data.pop(record_name) 
